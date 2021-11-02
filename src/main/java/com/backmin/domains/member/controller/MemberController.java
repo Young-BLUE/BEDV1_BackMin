@@ -30,8 +30,8 @@ public class MemberController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResult updateMember(@PathVariable("id") Long memberId, @RequestBody @Valid MemberUpdateParam memberUpdateParam) {
-        memberService.update(memberId, memberUpdateParam);
+    public ApiResult updateMember(@PathVariable("id") Long memberId, String password, @RequestBody @Valid MemberUpdateParam memberUpdateParam) {
+        memberService.update(memberId, password, memberUpdateParam);
         return ApiResult.ok(null);
     }
 

@@ -1,5 +1,7 @@
 package com.backmin.domains.member.service;
 
+import com.backmin.config.exception.BusinessException;
+import com.backmin.domains.common.enums.ErrorInfo;
 import com.backmin.domains.member.converter.MemberConverter;
 import com.backmin.domains.member.domain.Member;
 import com.backmin.domains.member.domain.MemberRepository;
@@ -32,10 +34,12 @@ public class MemberService {
     }
 
     @Transactional
-    public void update(Long memberId, MemberUpdateParam memberUpdateParam) {
-        memberRepository.findById(memberId)
-                .map(member -> memberConverter.convertUpdateDtoToMember(member, memberUpdateParam))
-                .orElseThrow(() -> new RuntimeException("Not Found Member Id : " + memberUpdateParam.getId()));
+    public void update(Long memberId, String password, MemberUpdateParam memberUpdateParam) {
+        Member foundMember = memberRepository.findById(memberId).orElseThrow(() -> new BusinessException(ErrorInfo.NOT_FOUND));
+        if (!(password.equalsIgnoreCase(foundMember.getPassword()))) {
+            throw new BusinessException(ErrorInfo.METHOD_ARG_NOT_VALID);
+        }
+        memberConverter.convertUpdateDtoToMember(foundMember, memberUpdateParam);
     }
 
     @Transactional(readOnly = true)
